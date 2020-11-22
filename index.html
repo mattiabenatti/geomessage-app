@@ -144,7 +144,7 @@
         console.log( "ready!" );
         $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:3000/paths',
+                    url: 'https://geomessage-app.herokuapp.com:3000/paths',
 
                     success: function (data) {
                       console.log("SUCCESS");
@@ -175,7 +175,7 @@
       console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
       $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:3000/geofences',
+                    url: 'https://geomessage-app.herokuapp.com:3000/geofences',
 
                     success: function (dataG) {
                       console.log("SUCCESS");
@@ -206,7 +206,7 @@
       });
       $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:3000/clusters',
+                    url: 'https://geomessage-app.herokuapp.com:3000/clusters',
 
                     success: function (dataC) {
                       console.log("SUCCESS");
@@ -238,7 +238,7 @@
 
       $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:3000/endpoints',
+                    url: 'https://geomessage-app.herokuapp.com:3000/endpoints',
 
                     success: function (dataD) {
                       console.log("SUCCESS");
@@ -270,7 +270,7 @@
 
       $.ajax({
         type: 'POST',
-        url: 'http://localhost:3000/message',
+        url: 'https://geomessage-app.herokuapp.com:3000/message',
         data: '{"lat":"11.337032318115234",\n"lon":"44.50014795286922",\n"message":"prova_message"}',
         success: function(dataE) {console.log("FATTOOOOOO");console.log(dataE)},
         contentType: "application/json",
@@ -280,7 +280,7 @@
 
       $.ajax({
         type: 'POST',
-        url: 'http://localhost:3000/path',
+        url: 'https://geomessage-app.herokuapp.com:3000/path',
         data: '{"type":1, "points":[[11.356902122497521,44.49647471986245],[11.355786323547399,44.496229829434111]]}',
         success: function(dataF) {console.log("FATTOOOOOO");console.log(dataF)},
         contentType: "application/json",

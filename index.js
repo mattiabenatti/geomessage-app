@@ -161,7 +161,7 @@ app.post('/path',(req,res6)=>{
   console.log(`Example app listening at http://localhost:${port}`)
 })*/
 
-app.use(express.static('http://localhost:'+port+'/index.html'));     
+app.use(express.static('https://geomessage-app.herokuapp.com:'+port+'/index.html'));     
 app.set('port', (process.env.PORT || 3000)) // set port
 
 app.listen(app.get('port'), function() {
