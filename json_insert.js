@@ -3,20 +3,20 @@ const { Pool, Client } = require('pg')
 
 
 const client = new Client({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'postgres',
-    password: 'postgres',
+    user: 'cglorzffrgxztf',
+    host: 'ec2-176-34-123-50.eu-west-1.compute.amazonaws.com',
+    database: 'd4oqj4rq16vo3t',
+    password: '05e522767165ae2f99091b1ff31820416854b8c6b4fe443a8e9fd14a8cf92141',
     port: 5432,
     max:10,
     idleTimeoutMillis: 30000
 });
 
 const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'postgres',
-    password: 'postgres',
+    user: 'cglorzffrgxztf',
+    host: 'ec2-176-34-123-50.eu-west-1.compute.amazonaws.com',
+    database: 'd4oqj4rq16vo3t',
+    password: '05e522767165ae2f99091b1ff31820416854b8c6b4fe443a8e9fd14a8cf92141',
     port: 5432,
     max:10,
     idleTimeoutMillis: 30000
