@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="ol.css" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+      .map {
+        height: 400px;
+        width: 100%;
+      }
+    </style>
+    <script src="ol.js"></script>
+    <title>OpenLayers example</title>
+  </head>
+  <body>
+    <h2>My Map</h2>
+    <div id="map" class="map"></div>
+    <script type="text/javascript">
+    var styles = {
+                        'LineString': new ol.style.Style({
+                          stroke: new ol.style.Stroke({
+                            color: 'red',
+                            width: 4,
+                          }),
+                          
+                        }),
+                        'Polygon': new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                              color: 'rgba(100, 255, 0, 1)',
+                              width: 2,
+                            }),
+                            fill: new ol.style.Fill({
+                              color: 'rgba(100, 255, 0, 0.3)',
+                            })
+                          }),
+                          'Circle': new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                              color: 'rgba(0, 0, 255, 1)',
+                              width: 2,
+                            }),
+                            fill: new ol.style.Fill({
+                              color: 'rgba(0, 0, 255, 0.3)',
+                            })
+                          })
+                      }
+                      var styles2 = {
+                        'Polygon': new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                              color: 'rgba(0, 0, 255, 1)',
+                              width: 2,
+                            }),
+                            fill: new ol.style.Fill({
+                              color: 'rgba(0, 0, 255, 0.3)',
+                            })
+                          })
+                      }
+                      var vectorSource2 = new ol.source.Vector({
+                        features:[]
+                      });
+                      var vectorLayer2 = new ol.layer.Vector({
+                        source:vectorSource2,
+                        style:new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                              color: 'rgba(0, 0, 255, 1)',
+                              width: 2,
+                            }),
+                            fill: new ol.style.Fill({
+                              color: 'rgba(0, 0, 255, 0.3)',
+                            })
+                          })
+                      });
+
+                      var vectorSource4 = new ol.source.Vector({
+                        features:[]
+                      });
+                      
+
+                      var clusterSource = new ol.source.Cluster({
+                        distance: 40,
+                        source: vectorSource4
+                      });
+
+                      var styleCache = {};
+                      var clusters = new ol.layer.Vector({
+                        source: clusterSource,
+                        style: function (feature) {
+
+                          var size = feature.get('features').length;
+                          var style = styleCache[size];
+                          if (!style) {
+                            style = new ol.style.Style({
+                              image: new ol.style.Circle({
+                                radius: 10,
+                                stroke: new ol.style.Stroke({
+                                  color: '#fff',
+                                }),
+                                fill: new ol.style.Fill({
+                                  color: '#3399CC',
+                                }),
+                              }),
+                              text: new ol.style.Text({
+                                text: size.toString(),
+                                fill: new ol.style.Fill({
+                                  color: '#fff',
+                                }),
+                              }),
+                            });
+                            styleCache[size] = style;
+                          }
+                          return style;
+                        }
+                      })
+                      var format = new ol.format.WKT();
+                      var styleFunction = function (feature) {
+
+                        return styles[feature.getGeometry().getType()];
+                      };
+                      var vectorSource = new ol.source.Vector({
+                        features:[]
+                      });
+                      var vectorLayer = new ol.layer.Vector({
+                        source:vectorSource,
+                        style:styleFunction
+                      })
+
+                        var map = new ol.Map({
+                        
+                        layers: [
+                          new ol.layer.Tile({
+                            source: new ol.source.OSM()
+                          }),
+                          vectorLayer,
+                          vectorLayer2,
+                          clusters
+                        ],
+                        target: 'map',
+                        view: new ol.View({
+                          center: ol.proj.fromLonLat([11.345486640930176,44.49313799932412]),
+                          zoom: 15
+                        })
+                      });
+
+    $( document ).ready(function() {
+        console.log( "ready!" );
+        $.ajax({
+                    type: 'GET',
+                    url: 'http://localhost:3000/paths',
+
+                    success: function (data) {
+                      console.log("SUCCESS");
+                      geofences = data[0];
+                      //console.log(geofences)
+                      
+                      /*var vectorSource = new ol.source.Vector({
+                        features: [format.readFeature(geofences,{
+                          dataProjection: 'EPSG:4326',
+                          featureProjection: 'EPSG:3857'
+                        })]
+                      });*/
+                      for(var i=0; i<10; i++){
+                        vectorSource.addFeature(format.readFeature(data[i],{
+                          dataProjection: 'EPSG:4326',
+                          featureProjection: 'EPSG:3857'
+                        }));
+                      }
+                      //console.log(vectorLayer)
+                      //vectorLayer.changed();
+                      //vectorLayer.refresh(true)
+                      
+                      
+
+                        
+          }
+      });
+      console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+      $.ajax({
+                    type: 'GET',
+                    url: 'http://localhost:3000/geofences',
+
+                    success: function (dataG) {
+                      console.log("SUCCESS");
+                      geofences = dataG[0];
+                      //console.log(geofences)
+                      
+                      /*var vectorSource = new ol.source.Vector({
+                        features: [format.readFeature(geofences,{
+                          dataProjection: 'EPSG:4326',
+                          featureProjection: 'EPSG:3857'
+                        })]
+                      });*/
+                      //console.log(dataG.length)
+                      for(var i=0; i<dataG.length; i++){
+                        vectorSource.addFeature(format.readFeature(dataG[i],{
+                          dataProjection: 'EPSG:4326',
+                          featureProjection: 'EPSG:3857'
+                        }));
+                      }
+                      //console.log(vectorLayer)
+                      //vectorLayer.changed();
+                      //vectorLayer.refresh(true)
+                      
+                      
+
+                        
+          }
+      });
+      $.ajax({
+                    type: 'GET',
+                    url: 'http://localhost:3000/clusters',
+
+                    success: function (dataC) {
+                      console.log("SUCCESS");
+                      geofences = dataC[0];
+                      //console.log(geofences)
+                      
+                      /*var vectorSource = new ol.source.Vector({
+                        features: [format.readFeature(geofences,{
+                          dataProjection: 'EPSG:4326',
+                          featureProjection: 'EPSG:3857'
+                        })]
+                      });*/
+                      //console.log(dataC.length)
+                      for(var i=0; i<dataC.length; i++){
+                        vectorSource2.addFeature(format.readFeature(dataC[i],{
+                          dataProjection: 'EPSG:4326',
+                          featureProjection: 'EPSG:3857'
+                        }));
+                      }
+                      //console.log(vectorLayer)
+                      //vectorLayer.changed();
+                      //vectorLayer.refresh(true)
+                      
+                      
+
+                        
+          }
+      });
+
+      $.ajax({
+                    type: 'GET',
+                    url: 'http://localhost:3000/endpoints',
+
+                    success: function (dataD) {
+                      console.log("SUCCESS");
+                      geofences = dataD[0];
+                      //console.log(geofences)
+                      
+                      /*var vectorSource = new ol.source.Vector({
+                        features: [format.readFeature(geofences,{
+                          dataProjection: 'EPSG:4326',
+                          featureProjection: 'EPSG:3857'
+                        })]
+                      });*/
+                      //console.log(dataD.length)
+                      for(var i=0; i<dataD.length; i++){
+                        vectorSource4.addFeature(format.readFeature(dataD[i],{
+                          dataProjection: 'EPSG:4326',
+                          featureProjection: 'EPSG:3857'
+                        }));
+                      }
+                      //console.log(vectorLayer)
+                      //vectorLayer.changed();
+                      //vectorLayer.refresh(true)
+                      
+                      
+
+                        
+          }
+      });
+
+      $.ajax({
+        type: 'POST',
+        url: 'http://localhost:3000/message',
+        data: '{"lat":"11.337032318115234",\n"lon":"44.50014795286922",\n"message":"prova_message"}',
+        success: function(dataE) {console.log("FATTOOOOOO");console.log(dataE)},
+        contentType: "application/json",
+        dataType: "json"
+        
+      });
+
+      $.ajax({
+        type: 'POST',
+        url: 'http://localhost:3000/path',
+        data: '{"type":1, "points":[[11.356902122497521,44.49647471986245],[11.355786323547399,44.496229829434111]]}',
+        success: function(dataF) {console.log("FATTOOOOOO");console.log(dataF)},
+        contentType: "application/json",
+        dataType: "json"
+        
+      });
+
+
+    });
+    /*function requestData() {
+      console.log("ciao dentro");
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function() {
+          if(xhr.readyState==4) {
+              content = xhr.responseText;
+              console.log("XHR");
+              if(content != '' && (content)) {
+                  console.log("content return");
+                  return content;
+              } else {
+                console.log("FALSO", xhr);
+                  return null;
+              }
+          }
+          else {
+            console.log("FALSO 2", xhr.readyState, xhr.status)
+          }
+      }
+      xhr.open('GET', "http://localhost:3000");
+      xhr.send(null);
+      console.log("ciao fine")
+    }
+      
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open( "GET", "http://localhost:3000" ); // false for synchronous request
+      xmlHttp.send();
+      geofences= xmlHttp.response;//
+      console.log("ciao");
+      geofences = requestData();
+      console.log("ciao1");
+      console.log(geofences)
+      var vectorSource = new ol.source.Vector({
+        features: new ol.format.GeoJSON().readFeatures(geofences)
+      });
+      var styles = {
+        'LineString': new ol.style.Style({
+          stroke: new ol.style.Stroke({
+            color: 'green',
+            width: 1,
+          }),
+        }),
+      }
+      var styleFunction = function (feature) {
+        return styles[feature.getGeometry().getType()];
+      };
+      var vectorLayer = new ol.layer.VectorLayer({
+        source:vectorSource,
+        style:styleFunction
+      })
+
+        var map = new ol.Map({
+        target: 'map',
+        layers: [
+          new ol.layer.Tile({
+            source: new ol.source.OSM()
+          }),
+          vectorLayer
+        ],
+        view: new ol.View({
+          center: ol.proj.fromLonLat([11.345486640930176,44.49313799932412]),
+          zoom: 15
+        })
+      });*/
+
+    </script>
+  </body>
+</html>
